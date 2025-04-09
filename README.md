@@ -14,14 +14,13 @@ A Helm chart for deploying the DCGM Metrics API service, which provides GPU metr
 
 1. Add the Helm repository:
 ```bash
-helm repo add dcgm-metrics-api https://github.com/V01d42/dcgm-metrics-api
+helm repo add dcgm-metrics-api https://v01d42.github.io/dcgm-metrics-api/
+helm repo update
 ```
 
 2. Install the chart:
 ```bash
-helm install dcgm-metrics-api dcgm-metrics-api/dcgm-metrics-api \
-  --set env.PROMETHEUS_URL="http://your-prometheus:9090" \
-  --set env.METRIC_NAMES="DCGM_FI_DEV_GPU_UTIL"
+helm install dcgm-metrics-api -n server-monitoring dcgm-metrics-api/dcgm-metrics-api -f values.yaml
 ```
 
 ## Configuration
