@@ -1,0 +1,26 @@
+# Build stage
+FROM golang:1.24.2-alpine AS builder
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN apk add --no-cache git gcc musl-dev && \
+    go mod download
+
+COPY . .
+RUN go build -o dcgm-metrics-api ./cmd/dcgm-metrics-api
+
+
+# Runtime stage
+FROM golang:1.24.2-alpine
+
+RUN apk add --no-cache ca-certificates tzdata
+
+WORKDIR /app
+COPY --from=builder /app/dcgm-metrics-api .
+COPY --from=builder /app/tests ./tests
+COPY --from=builder /app/pkg ./pkg
+COPY --from=builder /app/cmd ./cmd
+
+EXPOSE 8080
+
+CMD ["./dcgm-metrics-api"] 

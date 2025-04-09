@@ -1,0 +1,64 @@
+name: Release Charts
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/release.yml'
+      - 'charts/dcgm-metrics-api/**'
+      - 'cmd/dcgm-metrics-api/**'
+      - 'docker/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'pkg/**'
+
+jobs:
+  release:
+    permissions:
+      contents: write  # for creating releases
+      packages: write  # for pushing to GHCR
+      id-token: write  # for keyless signing
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.12.0
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          skip_existing: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_GENERATE_RELEASE_NOTES: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push charts to GHCR
+        run: |
+          shopt -s nullglob
+          for pkg in .cr-release-packages/*; do
+            if [ -z "${pkg:-}" ]; then
+              break
+            fi
+            helm push "${pkg}" "oci://ghcr.io/v01d42/charts"
+          done

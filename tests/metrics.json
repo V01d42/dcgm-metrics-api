@@ -1,0 +1,72 @@
+{
+  "status":"success",
+  "data":{
+    "resultType":"vector",
+    "result":[
+      {
+        "metric":{
+          "DCGM_FI_DRIVER_VERSION":"535.104.05",
+          "Hostname":"gpu-node-1",
+          "UUID":"GPU-1234-5678-9012",
+          "__name__":"DCGM_FI_DEV_GPU_TEMP",
+          "device":"nvidia0",
+          "gpu":"0",
+          "instance":"10.0.0.1:9400",
+          "job":"gpu-metrics",
+          "kubernetes_node":"gpu-node-1",
+          "modelName":"NVIDIA A100",
+          "pci_bus_id":"0000:01:00.0"
+        },
+        "value":[1743982065.253,"16"]
+      },
+      {
+        "metric":{
+          "DCGM_FI_DRIVER_VERSION":"535.104.05",
+          "Hostname":"gpu-node-1",
+          "UUID":"GPU-9876-5432-1098",
+          "__name__":"DCGM_FI_DEV_GPU_TEMP",
+          "device":"nvidia1",
+          "gpu":"1",
+          "instance":"10.0.0.1:9400",
+          "job":"gpu-metrics",
+          "kubernetes_node":"gpu-node-1",
+          "modelName":"NVIDIA A100",
+          "pci_bus_id":"0000:02:00.0"
+        },
+        "value":[1743982065.253,"14"]
+      },
+      {
+        "metric":{
+          "DCGM_FI_DRIVER_VERSION":"535.104.05",
+          "Hostname":"gpu-node-1",
+          "UUID":"GPU-1234-5678-9012",
+          "__name__":"DCGM_FI_DEV_POWER_USAGE",
+          "device":"nvidia0",
+          "gpu":"0",
+          "instance":"10.0.0.1:9400",
+          "job":"gpu-metrics",
+          "kubernetes_node":"gpu-node-1",
+          "modelName":"NVIDIA A100",
+          "pci_bus_id":"0000:01:00.0"
+        },
+        "value":[1743982065.253,"7.694"]
+      },
+      {
+        "metric":{
+          "DCGM_FI_DRIVER_VERSION":"535.104.05",
+          "Hostname":"gpu-node-1",
+          "UUID":"GPU-9876-5432-1098",
+          "__name__":"DCGM_FI_DEV_POWER_USAGE",
+          "device":"nvidia1",
+          "gpu":"1",
+          "instance":"10.0.0.1:9400",
+          "job":"gpu-metrics",
+          "kubernetes_node":"gpu-node-1",
+          "modelName":"NVIDIA A100",
+          "pci_bus_id":"0000:02:00.0"
+        },
+        "value":[1743982065.253,"7.498"]
+      }
+    ]
+  }
+}

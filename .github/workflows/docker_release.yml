@@ -1,0 +1,54 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/docker_release.yml'
+      - 'charts/dcgm-metrics-api/values.yaml'
+      - 'cmd/dcgm-metrics-api/**'
+      - 'docker/**'
+      - 'go.mod'
+      - 'go.sum'
+      - 'pkg/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get chart version
+        id: chart_version
+        run: |
+          VERSION=$(yq e '.appVersion' charts/dcgm-metrics-api/Chart.yaml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/v01d42/dcgm-metrics-api:latest
+            ghcr.io/v01d42/dcgm-metrics-api:${{ steps.chart_version.outputs.version }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ steps.chart_version.outputs.version }}

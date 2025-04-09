@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dcgm-metrics-api.fullname" . }}
+  labels:
+    {{- include "dcgm-metrics-api.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "dcgm-metrics-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dcgm-metrics-api.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PROMETHEUS_URL
+              value: {{ .Values.env.PROMETHEUS_URL | quote }}
+            - name: METRICS_ENDPOINT
+              value: {{ .Values.env.METRICS_ENDPOINT | quote }}
+            - name: METRIC_NAMES
+              value: |
+                {{- .Values.env.METRIC_NAMES | nindent 16 }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.probes.liveness | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.probes.readiness | nindent 12 }}

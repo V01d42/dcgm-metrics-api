@@ -1,0 +1,61 @@
+replicaCount: 1
+
+image:
+  # repository: dcgm-metrics-api
+  repository: ghcr.io/v01d42/dcgm-metrics-api
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+env:
+  PROMETHEUS_URL: "http://prometheus-server:9090"
+  METRICS_ENDPOINT: "/metrics"
+  METRIC_NAMES: |
+    - DCGM_FI_DEV_GPU_UTIL
+
+extraEnv: []
+
+service:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9095
+      targetPort: http
+      protocol: TCP
+  annotations: {}
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+probes:
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
