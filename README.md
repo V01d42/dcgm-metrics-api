@@ -20,7 +20,7 @@ helm repo update
 
 2. Install the chart:
 ```bash
-helm install dcgm-metrics-api -n server-monitoring dcgm-metrics-api/dcgm-metrics-api -f values.yaml
+helm install dcgm-metrics-api -n <namespace> dcgm-metrics-api/dcgm-metrics-api -f values.yaml
 ```
 
 ## Configuration
