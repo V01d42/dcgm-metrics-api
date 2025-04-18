@@ -11,7 +11,11 @@ env:
   PROMETHEUS_URL: "http://prometheus-server:9090"
   METRICS_ENDPOINT: "/metrics"
   METRIC_NAMES: |
+    - DCGM_FI_DEV_FB_FREE
+    - DCGM_FI_DEV_FB_USED
     - DCGM_FI_DEV_GPU_UTIL
+    - DCGM_FI_DEV_MEM_COPY_UTIL
+    - DCGM_FI_DEV_GPU_TEMP
 
 extraEnv: []
 
